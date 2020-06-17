@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package hipstershop;
 
+//------------------added for http rest api support-----
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+//------------------------------------------------------
+
 // -----------------Cart service-----------------
 
 service CartService {
@@ -53,8 +58,18 @@ message ListRecommendationsResponse {
 // ---------------Product Catalog----------------
 
 service ProductCatalogService {
-    rpc ListProducts(Empty) returns (ListProductsResponse) {}
-    rpc GetProduct(GetProductRequest) returns (Product) {}
+    rpc ListProducts(Empty) returns (ListProductsResponse) {
+    // Define HTTP mapping.
+    // Client example (Assuming your service is hosted at the given 'DOMAIN_NAME'):
+    //   curl http://DOMAIN_NAME/api/v1/products
+       option (google.api.http) = { get: "/api/v1/products" };
+    }
+    rpc GetProduct(GetProductRequest) returns (Product) {
+    // Define HTTP mapping.
+    // Client example - returns the product with pordcutid=1:
+    //   curl http://DOMAIN_NAME/api/v1/product/1
+    option (google.api.http) = { get: "api/v1/product/{id}" };
+    }
     rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse) {}
 }
 
